@@ -12,7 +12,7 @@ const auth = require('../middlewares/auth')({
 const isCoach = require('../middlewares/isCoach')
 const adminController = require('../controllers/admin')
 
-router.post('/coaches/courses', auth, isCoach, adminController.postCourse)
+router.post('/coaches/courses', auth, isCoach, adminController.postCourse) //新增課程
 
 router.get('/coaches/revenue', auth, isCoach, adminController.getCoachRevenue)
 

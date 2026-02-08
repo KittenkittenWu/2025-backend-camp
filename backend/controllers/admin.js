@@ -20,33 +20,33 @@ const monthMap = {
   december: 12
 }
 
-function isUndefined (value) {
+function isUndefined(value) {
   return value === undefined
 }
 
-function isNotValidSting (value) {
+function isNotValidSting(value) {
   return typeof value !== 'string' || value.trim().length === 0 || value === ''
 }
 
-function isNotValidInteger (value) {
+function isNotValidInteger(value) {
   return typeof value !== 'number' || value < 0 || value % 1 !== 0
 }
 
 class AdminController {
-  static async postCourse (req, res, next) {
+  static async postCourse(req, res, next) {
     try {
-      const { id } = req.user
+      const { id } = req.user //1. 拿到使用者ID
       const {
         skill_id: skillId, name, description, start_at: startAt, end_at: endAt,
         max_participants: maxParticipants, meeting_url: meetingUrl
-      } = req.body
+      } = req.body //2. 拿到使用者輸入的課程資料
       if (isUndefined(skillId) || isNotValidSting(skillId) ||
-      isUndefined(name) || isNotValidSting(name) ||
-      isUndefined(description) || isNotValidSting(description) ||
-      isUndefined(startAt) || isNotValidSting(startAt) ||
-      isUndefined(endAt) || isNotValidSting(endAt) ||
-      isUndefined(maxParticipants) || isNotValidInteger(maxParticipants) ||
-      isUndefined(meetingUrl) || isNotValidSting(meetingUrl) || !meetingUrl.startsWith('https')) {
+        isUndefined(name) || isNotValidSting(name) ||
+        isUndefined(description) || isNotValidSting(description) ||
+        isUndefined(startAt) || isNotValidSting(startAt) ||
+        isUndefined(endAt) || isNotValidSting(endAt) ||
+        isUndefined(maxParticipants) || isNotValidInteger(maxParticipants) ||
+        isUndefined(meetingUrl) || isNotValidSting(meetingUrl) || !meetingUrl.startsWith('https')) {
         logger.warn('欄位未填寫正確')
         res.status(400).json({
           status: 'failed',
@@ -67,9 +67,9 @@ class AdminController {
         })
         return
       }
-      const courseRepo = dataSource.getRepository('Course')
+      const courseRepo = dataSource.getRepository('Course') //3. 建立課程
       const newCourse = courseRepo.create({
-        user_id: id,
+        user_id: id, //這堂課是「這位教練」開的
         skill_id: skillId,
         name,
         description,
@@ -78,7 +78,7 @@ class AdminController {
         max_participants: maxParticipants,
         meeting_url: meetingUrl
       })
-      const savedCourse = await courseRepo.save(newCourse)
+      const savedCourse = await courseRepo.save(newCourse) //3. 將課程保存到資料庫
       const course = await courseRepo.findOne({
         where: { id: savedCourse.id }
       })
@@ -94,7 +94,7 @@ class AdminController {
     }
   }
 
-  static async getCoachRevenue (req, res, next) {
+  static async getCoachRevenue(req, res, next) {
     try {
       const { id } = req.user
       const { month } = req.query
@@ -165,7 +165,7 @@ class AdminController {
     }
   }
 
-  static async getCoachCourses (req, res, next) {
+  static async getCoachCourses(req, res, next) {
     try {
       const { id } = req.user
       const courses = await dataSource.getRepository('Course').find({
@@ -230,7 +230,7 @@ class AdminController {
     }
   }
 
-  static async getCoachCourseDetail (req, res, next) {
+  static async getCoachCourseDetail(req, res, next) {
     try {
       const { id } = req.user
       const { courseId } = req.params
@@ -292,7 +292,7 @@ class AdminController {
     }
   }
 
-  static async putCoachCourseDetail (req, res, next) {
+  static async putCoachCourseDetail(req, res, next) {
     try {
       const { id } = req.user
       const { courseId } = req.params
@@ -361,7 +361,7 @@ class AdminController {
     }
   }
 
-  static async postCoach (req, res, next) {
+  static async postCoach(req, res, next) {
     try {
       const { userId } = req.params
       const { experience_years: experienceYears, description, profile_image_url: profileImageUrl = null } = req.body
@@ -440,7 +440,7 @@ class AdminController {
     }
   }
 
-  static async putCoachProfile (req, res, next) {
+  static async putCoachProfile(req, res, next) {
     try {
       const { id } = req.user
       const {
@@ -522,7 +522,7 @@ class AdminController {
     }
   }
 
-  static async getCoachProfile (req, res, next) {
+  static async getCoachProfile(req, res, next) {
     try {
       const { id } = req.user
       const coachRepo = dataSource.getRepository('Coach')

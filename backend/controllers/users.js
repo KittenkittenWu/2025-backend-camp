@@ -6,18 +6,18 @@ const { dataSource } = require('../db/data-source')
 const logger = require('../utils/logger')('UsersController')
 const generateJWT = require('../utils/generateJWT')
 
-const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
+const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,16}/
 
-function isUndefined (value) {
+function isUndefined(value) {
   return value === undefined
 }
 
-function isNotValidSting (value) {
+function isNotValidSting(value) {
   return typeof value !== 'string' || value.trim().length === 0 || value === ''
 }
 
 class UsersController {
-  static async postSignup (req, res, next) {
+  static async postSignup(req, res, next) {
     try {
       const { name, email, password } = req.body
       if (isUndefined(name) || isNotValidSting(name) || isUndefined(email) || isNotValidSting(email) || isUndefined(password) || isNotValidSting(password)) {
@@ -74,7 +74,7 @@ class UsersController {
     }
   }
 
-  static async postLogin (req, res, next) {
+  static async postLogin(req, res, next) {
     try {
       const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
       const { email, password } = req.body
@@ -138,7 +138,7 @@ class UsersController {
     }
   }
 
-  static async getProfile (req, res, next) {
+  static async getProfile(req, res, next) {
     try {
       const { id } = req.user
       const userRepository = dataSource.getRepository('User')
@@ -158,7 +158,7 @@ class UsersController {
     }
   }
 
-  static async getCreditPackage (req, res, next) {
+  static async getCreditPackage(req, res, next) {
     try {
       const { id } = req.user
       const creditPurchaseRepo = dataSource.getRepository('CreditPurchase')
@@ -198,7 +198,7 @@ class UsersController {
     }
   }
 
-  static async putProfile (req, res, next) {
+  static async putProfile(req, res, next) {
     try {
       const { id } = req.user
       const { name } = req.body
@@ -255,13 +255,13 @@ class UsersController {
     }
   }
 
-  static async putPassword (req, res, next) {
+  static async putPassword(req, res, next) {
     try {
       const { id } = req.user
       const { password, new_password: newPassword, confirm_new_password: confirmNewPassword } = req.body
       if (isUndefined(password) || isNotValidSting(password) ||
-      isUndefined(newPassword) || isNotValidSting(newPassword) ||
-      isUndefined(confirmNewPassword) || isNotValidSting(confirmNewPassword)) {
+        isUndefined(newPassword) || isNotValidSting(newPassword) ||
+        isUndefined(confirmNewPassword) || isNotValidSting(confirmNewPassword)) {
         logger.warn('欄位未填寫正確')
         res.status(400).json({
           status: 'failed',
@@ -330,7 +330,7 @@ class UsersController {
     }
   }
 
-  static async getCourseBooking (req, res, next) {
+  static async getCourseBooking(req, res, next) {
     try {
       const { id } = req.user
       const creditPurchaseRepo = dataSource.getRepository('CreditPurchase')

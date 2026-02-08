@@ -1,27 +1,28 @@
 const { dataSource } = require('../db/data-source')
 const logger = require('../utils/logger')('CreditPackageController')
 
-function isUndefined (value) {
+function isUndefined(value) {
   return value === undefined
 }
 
-function isNotValidSting (value) {
+function isNotValidSting(value) {
   return typeof value !== 'string' || value.trim().length === 0 || value === ''
 }
 
-function isNotValidInteger (value) {
+function isNotValidInteger(value) {
   return typeof value !== 'number' || value < 0 || value % 1 !== 0
 }
 
 class CreditPackageController {
-  static async getAll (req, res, next) {
+  static async getAll(req, res, next) {
     try {
       const creditPackage = await dataSource.getRepository('CreditPackage').find({
         select: ['id', 'name', 'credit_amount', 'price']
       })
       res.status(200).json({
         status: 'success',
-        data: creditPackage
+        data: creditPackage,
+        total: creditPackage.length
       })
     } catch (error) {
       logger.error(error)
@@ -29,12 +30,12 @@ class CreditPackageController {
     }
   }
 
-  static async postCreditPackage (req, res, next) {
+  static async postCreditPackage(req, res, next) {
     try {
       const { name, credit_amount: creditAmount, price } = req.body
       if (isUndefined(name) || isNotValidSting(name) ||
         isUndefined(creditAmount) || isNotValidInteger(creditAmount) ||
-              isUndefined(price) || isNotValidInteger(price)) {
+        isUndefined(price) || isNotValidInteger(price)) {
         res.status(400).json({
           status: 'failed',
           message: '欄位未填寫正確'
@@ -70,7 +71,7 @@ class CreditPackageController {
     }
   }
 
-  static async postUserBuy (req, res, next) {
+  static async postUserBuy(req, res, next) {
     try {
       const { id } = req.user
       const { creditPackageId } = req.params
@@ -106,7 +107,7 @@ class CreditPackageController {
     }
   }
 
-  static async delete (req, res, next) {
+  static async delete(req, res, next) {
     try {
       const { creditPackageId } = req.params
       if (isUndefined(creditPackageId) || isNotValidSting(creditPackageId)) {
